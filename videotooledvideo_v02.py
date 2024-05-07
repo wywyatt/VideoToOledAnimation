@@ -8,12 +8,32 @@
 #
 #   stack overflow credit to: user13074756, Jeru Luke, and Mark Setchell
 
-
-from PIL import Image
 import os
-import cv2
+import importlib.util
+import subprocess
 
 def main():
+    try:
+        import cv2
+    except ImportError:
+        print("OpenCV is not installed. Installing...")
+        subprocess.check_call(["pip", "install", "opencv-python"])
+        print("OpenCV has been installed successfully.")
+    else:
+        print("OpenCV is already installed.")
+
+    try:
+        from PIL import image
+    except ImportError:
+        print("PIL is not installed. Installing...")
+        subprocess.check_call(["pip", "install", "pillow"])
+        print("PIL has been installed successfully.")
+    else:
+        print("PIL (Pillow) is already installed.")
+
+    import cv2
+    from PIL import Image
+
     video_path = input("Please input video path\nEX: D:/oledimages/video/video.mp4\n")
     current_directory = os.getcwd()
     folder_name = "oledanimation_frames"
