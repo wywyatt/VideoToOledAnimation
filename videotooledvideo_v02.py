@@ -28,9 +28,17 @@ except ImportError:
     print("PIL has been installed successfully.")
 
 import cv2
-from PIL import Image
+from PIL import Image, ImageOps
 
-    
+def scale(scaleinput, frame):
+    if scaleinput == "stretch":
+        scalemethod = cv2.resize(frame, (128, 32))
+        return scalemethod
+    elif scaleinput == "crop":
+        scale_factor = 32 / int(frame.shape[0])
+        scalemethod = cv2.resize(frame, None, fx=scale_factor, fy=scale_factor, interpolation=cv2.INTER_LINEAR)
+        return scalemethod
+
 def main():
     current_directory = os.getcwd()
     image_path = os.path.join(current_directory, "oledanimationTEMP_FRAMES")
@@ -48,10 +56,15 @@ def main():
         video = cv2.VideoCapture(video_path)
 
     # ask user for shading preference
-    if input("Shading? Yes or No: ").lower() == "yes":
+    if input("Shading? (Yes or No): ").lower() == "yes":
         ditherchoice = Image.Dither.FLOYDSTEINBERG
     else:
         ditherchoice = 0
+
+    #get user input for scale choice
+    scaleinput = input("Scale method? (stretch or crop): ")
+
+    print("Cooking images now..")
     
     #check if folder exists for temp_images,
     if not os.path.exists(image_path):
@@ -75,12 +88,9 @@ def main():
     output_video.release()
     video.release()
     
-    print("Cooking images now..")
     
-    curr_frame = 0
-
     output_video = cv2.VideoCapture(str(current_directory) + r"\output_video.mp4")
-    
+    curr_frame = 0
     while True:
         ret, frame = output_video.read()
 
@@ -89,7 +99,7 @@ def main():
 
         name = os.path.join(image_path, str(curr_frame) + ".png")
 
-        resized_image = cv2.resize(frame, (128, 32))
+        resized_image = scale(scaleinput, frame)
 
         cv2.imwrite(name, resized_image)
 
@@ -107,20 +117,21 @@ def main():
     total_height = sum(img.height for img in images)
 
     # Create a blank image with total height
-    combined_image = Image.new('1', (images[0].width, total_height))
+    combined_image = Image.new('1', (128, total_height))
 
     # Paste each image onto the combined image
     y_offset = 0
     for img in images:
-        combined_image.paste(img, (0, y_offset))
+        combined_image.paste(img, ((128 - img.width) // 2, y_offset))
         y_offset += img.height
 
+    
     # check for what number image this is
     n = 0
     while os.path.exists("final_animation" + str(n) + ".bmp"):
         n += 1
-        
-    combined_image.save("final_animation" + str(n) + ".bmp")
+    
+    ImageOps.invert(combined_image).save("final_animation" + str(n) + ".bmp")
     #delete temp folder
     shutil.rmtree(image_path)
     os.remove("output_video.mp4")
