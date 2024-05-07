@@ -1,6 +1,6 @@
 #   Video to 128x32 Oled Animation!
 #
-#   I made this program to add some nice effects like dithering to short clips, for use on a proffie oled
+#   I made this program to add some nice effects like dithering to short clips, for use on a proffie/cfx oled
 #   Should be pretty simple, most of it was haggled together using existing snippets of code in stack overflow comments :p and chatgpt of course
 #
 #   - WyWyatt
@@ -30,17 +30,20 @@ except ImportError:
 import cv2
 from PIL import Image, ImageOps
 
+
 def scale(scaleinput, frame):
     if scaleinput == "stretch":
         scalemethod = cv2.resize(frame, (128, 32))
         return scalemethod
-    elif scaleinput == "crop":
-        scale_factor = 32 / int(frame.shape[0])
+    elif scaleinput == "zoom":
+        scale_factor = 128 / int(frame.shape[1])
         scalemethod = cv2.resize(frame, None, fx=scale_factor, fy=scale_factor, interpolation=cv2.INTER_LINEAR)
         return scalemethod
 
 def main():
-    current_directory = os.getcwd()
+    
+    current_directory = os.path.dirname(os.path.abspath(__file__))
+    os.chdir(os.path.dirname(os.path.abspath(__file__)))
     image_path = os.path.join(current_directory, "oledanimationTEMP_FRAMES")
     video_path = input("Please input video path, ex: D:/oledimages/video/video.mp4: ")
     video = cv2.VideoCapture(video_path)
@@ -62,7 +65,7 @@ def main():
         ditherchoice = 0
 
     #get user input for scale choice
-    scaleinput = input("Scale method? (stretch or crop): ")
+    scaleinput = input("Scale method? (stretch, zoom, or none): ")
 
     print("Cooking images now..")
     
@@ -136,6 +139,10 @@ def main():
     shutil.rmtree(image_path)
     os.remove("output_video.mp4")
     
-    print("\nDone! Your image is saved in the same folder as this script, and titled final_animation.bmp.\nHave a good one :)")
-    
-main()
+    print("\nDone! Your image is saved in the same folder as this script, and titled final_animation.bmp\nHave a good one :)")
+
+try:
+    main()
+except Exception as e:
+    print("An error occurred:", e)
+    input("Press Enter to exit...")
