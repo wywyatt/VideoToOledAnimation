@@ -38,7 +38,7 @@ def main():
     video = cv2.VideoCapture(video_path)
     
     palIm = Image.new('P', (1,1))
-    palette = [255, 255, 255 ] + [0, 0 ,0] * 255
+    palette = [0, 0, 0] + [255, 255, 255] * 255
     palIm.putpalette(palette)
 
     # Check if the video file was opened successfully
@@ -94,7 +94,8 @@ def main():
         cv2.imwrite(name, resized_image)
 
         # process frame using PIL
-        img = Image.open(name).convert("RGB").quantize(colors=2, method=0, kmeans=2, palette=palIm, dither=ditherchoice)
+        img = Image.open(name).convert("L").quantize(colors=2, method=0, kmeans=2, palette=palIm, dither=ditherchoice)
+        img = Image.open(name).convert("1")
         img.save(name)
         
         curr_frame += 1
@@ -106,7 +107,7 @@ def main():
     total_height = sum(img.height for img in images)
 
     # Create a blank image with total height
-    combined_image = Image.new('RGB', (images[0].width, total_height))
+    combined_image = Image.new('1', (images[0].width, total_height))
 
     # Paste each image onto the combined image
     y_offset = 0
