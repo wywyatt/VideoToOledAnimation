@@ -41,10 +41,10 @@ def scale(scaleinput, frame):
         return scalemethod
 
 def main():
-    
+    frames = []
     current_directory = os.path.dirname(os.path.abspath(__file__))
     os.chdir(os.path.dirname(os.path.abspath(__file__)))
-    image_path = os.path.join(current_directory, "oledanimationTEMP_FRAMES")
+    image_path = os.path.join(current_directory, "oledanimationTEMPFRAMES")
     video_path = input("Please input video path, ex: D:/oledimages/video/video.mp4: ")
     video = cv2.VideoCapture(video_path)
     
@@ -65,8 +65,11 @@ def main():
         ditherchoice = 0
 
     #get user input for scale choice
-    scaleinput = input("Scale method? (stretch, zoom, or none): ")
+    scaleinput = input("Scale method? (stretch, zoom, or none): ").lower()
 
+    # get gif choice
+    gifchoice = input("Would you like a GIF preview? (yes or no): ").lower()
+    
     print("Cooking images now..")
     
     #check if folder exists for temp_images,
@@ -114,6 +117,16 @@ def main():
         curr_frame += 1
 
     output_video.release()
+
+    print("frames produced: " + str(curr_frame))
+
+    if gifchoice == "yes":
+        #create gif list
+        for filename in os.listdir(image_path):
+            filepath = os.path.join(image_path, filename)
+            frames.append(Image.open(filepath))
+        #create gif using list
+        frames[0].save(os.path.join(current_directory, "gifpreveiw1.gif"), save_all=True, append_images=frames[1:], duration=42, loop=0)
 
     # Open all images and calculate total height
     images = [Image.open(os.path.join(image_path, f"{i}.png")) for i in range(curr_frame)]
