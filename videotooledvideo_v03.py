@@ -103,7 +103,7 @@ def main():
         if not ret:
             break
 
-        name = os.path.join(image_path, str(curr_frame) + ".png")
+        name = os.path.join(image_path, str(curr_frame).rjust(5, '0') + ".png")
 
         resized_image = scale(scaleinput, frame)
 
@@ -121,12 +121,17 @@ def main():
     print("frames produced: " + str(curr_frame))
 
     if gifchoice == "yes":
+        print("Making gif...")
+        #check gif number
+        n = 0
+        while os.path.exists(os.path.join(current_directory, "gifpreview" + str(n) + ".gif")):
+            n += 1
         #create gif list
         for filename in os.listdir(image_path):
             filepath = os.path.join(image_path, filename)
             frames.append(Image.open(filepath))
         #create gif using list
-        frames[0].save(os.path.join(current_directory, "gifpreveiw1.gif"), save_all=True, append_images=frames[1:], duration=42, loop=0)
+        frames[0].save(os.path.join(current_directory, "gifpreview" + str(n) + ".gif"), save_all=True, append_images=frames[1:], duration=42, loop=0)
 
     # Open all images and calculate total height
     images = [Image.open(os.path.join(image_path, f"{i}.png")) for i in range(curr_frame)]
@@ -149,7 +154,7 @@ def main():
     
     ImageOps.invert(combined_image).save("final_animation" + str(n) + ".bmp")
     #delete temp folder
-    shutil.rmtree(image_path)
+    #shutil.rmtree(image_path)
     os.remove("output_video.mp4")
     
     print("\nDone! Your image is saved in the same folder as this script, and titled final_animation.bmp\nHave a good one :)")
