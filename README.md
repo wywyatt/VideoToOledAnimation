@@ -2,7 +2,7 @@ Howdy! This program allows people to take animations or movie clips, and convert
 It currently runs on python 3.12.3 --on windows this is the same one in the microsoft store. To run the program, just install python, and double click the script. :) Message me if you have any problems, I'm in the r/lightsabers discord, @__wyatt
 
 CONFIGURING:
- - The current user-inpupt options allow selection of dithering. Dithering allows for false-shading on low quality images that require gradients to be perceivable. The dithering method uses floyd-steinberg, and you can also choose no dithering if you'd like no shading. A good example of when to use no shading is after making a plain unshaded text animation video, and wanting to render that out as a proffie image.
+ - The current user input options allow selection of dithering. Dithering allows for false-shading on low quality images that require gradients to be perceivable. The current dithering method uses floyd-steinberg, and you can also choose no dithering if you'd like no shading. A good example of when to use no shading is after making a plain unshaded text animation video, and wanting to render that out as a proffie image.
 You should use dithering for the majority of movie clips however. 
 Select either Yes to choose floyd-steinberg, or No for solid colors.
 
